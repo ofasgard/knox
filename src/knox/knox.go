@@ -77,7 +77,7 @@ func PortKnocker(ch chan Hostinfo, fp payload, ports ...int) {
 		if data.port == ports[current_index] {
 			known_hosts[data.IP] += 1
 			if known_hosts[data.IP] >= len(ports) {
-				fp.Payload(data.IP)
+				fp.Payload(data)
 				known_hosts[data.IP] = 0
 			}
 		} else {
@@ -114,7 +114,7 @@ func SrcPortKnocker(ch chan Hostinfo, fp payload, ports ...int) {
 		if data.srcport == ports[current_index] {
 			known_hosts[data.IP] += 1
 			if known_hosts[data.IP] >= len(ports) {
-				fp.Payload(data.IP)
+				fp.Payload(data)
 				known_hosts[data.IP] = 0
 			}
 		} else {

@@ -5,13 +5,13 @@ package knox
 import "fmt"
 
 type payload interface {
-	Payload(string)
+	Payload(Hostinfo)
 }
 
 type SimplePayload int
 
-func (p SimplePayload) Payload(ip string) {
-	fmt.Println("A payload was triggered by", ip)
+func (p SimplePayload) Payload(data Hostinfo) {
+	fmt.Println("A payload was triggered by", data.IP)
 }
 
 
