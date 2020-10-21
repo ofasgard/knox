@@ -36,18 +36,18 @@ func PortStreamTCP(iface string, ip string, ch chan Hostinfo, sig chan error) {
 		ipdata := networklayer.(*layers.IPv4)
 		tcpdata := transportlayer.(*layers.TCP)
 		h := Hostinfo{}
-		h.packet = packet
-		h.port = int(tcpdata.DstPort)
-		h.srcport = int(tcpdata.SrcPort)
+		h.Packet = packet
+		h.Port = int(tcpdata.DstPort)
+		h.Srcport = int(tcpdata.SrcPort)
 		h.IP = ipdata.SrcIP.String()
 		ch <-h
 	}
 }
 
 type Hostinfo struct {
-	packet gopacket.Packet
-	port int
-	srcport int
+	Packet gopacket.Packet
+	Port int
+	Srcport int
 	IP string
 }
 
@@ -76,7 +76,7 @@ func PortKnocker(ch chan Hostinfo, fp payload, ports ...int) {
 		}
 		//fmt.Println("[DEBUG] Host:", data.IP, ", Port:", data.port)
 		//fmt.Println("[DEBUG] Expecting:", ports[current_index])
-		if data.port == ports[current_index] {
+		if data.Port == ports[current_index] {
 			known_hosts[data.IP] += 1
 			if known_hosts[data.IP] >= len(ports) {
 				fp.Payload(data)
@@ -113,7 +113,7 @@ func SrcPortKnocker(ch chan Hostinfo, fp payload, ports ...int) {
 		}
 		//fmt.Println("[DEBUG] Host:", data.IP, ", Port:", data.srcport)
 		//fmt.Println("[DEBUG] Expecting:", ports[current_index])
-		if data.srcport == ports[current_index] {
+		if data.Srcport == ports[current_index] {
 			known_hosts[data.IP] += 1
 			if known_hosts[data.IP] >= len(ports) {
 				fp.Payload(data)
