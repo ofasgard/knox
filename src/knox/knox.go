@@ -36,6 +36,7 @@ func PortStreamTCP(iface string, ip string, ch chan Hostinfo, sig chan error) {
 		ipdata := networklayer.(*layers.IPv4)
 		tcpdata := transportlayer.(*layers.TCP)
 		h := Hostinfo{}
+		h.packet = packet
 		h.port = int(tcpdata.DstPort)
 		h.srcport = int(tcpdata.SrcPort)
 		h.IP = ipdata.SrcIP.String()
@@ -44,6 +45,7 @@ func PortStreamTCP(iface string, ip string, ch chan Hostinfo, sig chan error) {
 }
 
 type Hostinfo struct {
+	packet gopacket.Packet
 	port int
 	srcport int
 	IP string
