@@ -6,6 +6,12 @@ import "github.com/google/gopacket"
 import "github.com/google/gopacket/pcap"
 import "github.com/google/gopacket/layers"
 
+type Hostinfo struct {
+	Packet gopacket.Packet
+	Port int
+	Srcport int
+	IP string
+}
 
 /* PortStreamTCP(iface string, ip string, ch chan Hostinfo, sig chan bool)
 *
@@ -44,23 +50,16 @@ func PortStreamTCP(iface string, ip string, ch chan Hostinfo, sig chan error) {
 	}
 }
 
-type Hostinfo struct {
-	Packet gopacket.Packet
-	Port int
-	Srcport int
-	IP string
-}
-
-/* PortKnocker(ch chan Hostinfo, fp payload, ports ...int)
+/* PortKnocker(ch chan Hostinfo, res chan Hostinfo, ports ...int)
 *
 * ch: the channel to receive host/port information from PortStreamTCP()
-* fp: the payload object containing a function to trigger
-* ports: an ordered list of ports to trigger on
+* res: the output channel to send host/port information that triggers the port knocker
+* ports: an ordered list of destination ports to trigger on
 *
-* A standard port knocker that can be provided with any sequential port sequence. When it receives the sequence, the payload is triggered.
+* A standard port knocker that can be provided with any sequential port sequence. When it receives the sequence, it sends info about the packet along the res channel.
 */
 
-func PortKnocker(ch chan Hostinfo, fp payload, ports ...int) {
+func PortKnocker(ch chan Hostinfo, res chan Hostinfo, ports ...int) {
 	known_hosts := make(map[string]int)
 	for {
 		data := <-ch
@@ -79,7 +78,7 @@ func PortKnocker(ch chan Hostinfo, fp payload, ports ...int) {
 		if data.Port == ports[current_index] {
 			known_hosts[data.IP] += 1
 			if known_hosts[data.IP] >= len(ports) {
-				fp.Payload(data)
+				res <- data
 				known_hosts[data.IP] = 0
 			}
 		} else {
@@ -88,16 +87,16 @@ func PortKnocker(ch chan Hostinfo, fp payload, ports ...int) {
 	}
 }
 
-/* SrcPortKnocker(ch chan Hostinfo, fp payload, ports ...int)
+/* SrcPortKnocker(ch chan Hostinfo, res chan Hostinfo, ports ...int)
 *
 * ch: the channel to receive host/port information from PortStreamTCP()
-* fp: the payload object containing a function to trigger
-* ports: an ordered list of ports to trigger on
+* res: the output channel to send host/port information that triggers the port knocker
+* ports: an ordered list of source ports to trigger on
 *
-* Identical to the basic port knocker, but it triggers based on source instead of destination port. When it receives the sequence, the payload is triggered.
+* Identical to the basic port knocker, but it triggers based on source instead of destination port. When it receives the sequence, it sends info about the packet along the res channel.
 */
 
-func SrcPortKnocker(ch chan Hostinfo, fp payload, ports ...int) {
+func SrcPortKnocker(ch chan Hostinfo, res chan Hostinfo, ports ...int) {
 	known_hosts := make(map[string]int)
 	for {
 		data := <-ch
@@ -116,7 +115,7 @@ func SrcPortKnocker(ch chan Hostinfo, fp payload, ports ...int) {
 		if data.Srcport == ports[current_index] {
 			known_hosts[data.IP] += 1
 			if known_hosts[data.IP] >= len(ports) {
-				fp.Payload(data)
+				res <- data
 				known_hosts[data.IP] = 0
 			}
 		} else {

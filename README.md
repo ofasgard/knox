@@ -26,7 +26,11 @@ func main() {
 		fmt.Println(res.Error())
 		return
 	}
-	var basic_payload knox.SimplePayload
-	knox.PortKnocker(ch, basic_payload, 1337, 1338, 1339)
+	knock := make(chan knox.Hostinfo, 0)
+	go knox.PortKnocker(ch, knock, 1337, 1338, 1339)
+	for {
+		host_data := <-knock
+		fmt.Println("Received a successful knock from", host_data.IP)
+	}
 }
 ```
