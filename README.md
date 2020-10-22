@@ -1,6 +1,6 @@
 # knox
 
-A package containing implementations of port knocking using the libpcap wrappers in Google's gopacket library. You can use it to create services that monitor your network interfaces for a specific sequence of ports, even if the ports in question are closed. This package includes support for executing an arbitrary "payload" after a successful port knock occurs, and tracks which IP address it received the sequence from.
+A package containing implementations of port knocking using the libpcap wrappers in Google's gopacket library. You can use it to create services that monitor your network interfaces for a specific sequence of ports, even if the ports in question are closed. When a successful port knock is detected, information about the triggering packet is exposed by the package so that you can act on it as you please.
 
 ## Dependencies
 
