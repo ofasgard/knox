@@ -13,18 +13,19 @@ type Hostinfo struct {
 	IP string
 }
 
-/* PortStreamTCP(iface string, ip string, ch chan Hostinfo, sig chan bool)
+/* PortStreamTCP(iface string, ip string, snaplen int, ch chan Hostinfo, sig chan bool)
 *
 * iface: the interface to sniff on
 * ip: your ip address, for filtering purposes
+* snaplen: snapshot length of each captured frame
 * ch: the channel to send host information along
 * sig: the channel to send error values along
 *
 * A stream of incoming TCP ports and IPv4 addresses sniffed from an interface.
 */
 
-func PortStreamTCP(iface string, ip string, ch chan Hostinfo, sig chan error) {
-	handle,err := pcap.OpenLive(iface, 1600, true, pcap.BlockForever)
+func PortStreamTCP(iface string, ip string, snaplen int, ch chan Hostinfo, sig chan error) {
+	handle,err := pcap.OpenLive(iface, int32(snaplen), true, pcap.BlockForever)
 	if err != nil {
 		sig <- err
 		return

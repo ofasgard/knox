@@ -19,7 +19,7 @@ import "github.com/ofasgard/knox"
 func main() {
 	ch := make(chan knox.Hostinfo, 0)
 	sig := make(chan error, 0)
-	go knox.PortStreamTCP("eth0", "45.33.32.156", ch, sig)
+	go knox.PortStreamTCP("eth0", "45.33.32.156", 1600, ch, sig)
 	res := <-sig
 	if res != nil {
 		fmt.Println("Error in setting up the sniffer. Check permissions, interface name, IP?")
