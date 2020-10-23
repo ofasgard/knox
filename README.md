@@ -14,7 +14,7 @@ This is an example of a simple port knocking listener that triggers on ports 133
 package main
 
 import "fmt"
-import "knox"
+import "github.com/ofasgard/knox"
 
 func main() {
 	ch := make(chan knox.Hostinfo, 0)
