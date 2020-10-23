@@ -38,7 +38,9 @@ func PortStreamTCP(iface string, ip string, ch chan Hostinfo, sig chan error) {
 	packetSource := gopacket.NewPacketSource(handle, handle.LinkType())
 	for packet := range packetSource.Packets() {
 		networklayer := packet.NetworkLayer()
+		if networklayer == nil { continue }
 		transportlayer := packet.TransportLayer()
+		if transportlayer == nil { continue }
 		ipdata := networklayer.(*layers.IPv4)
 		tcpdata := transportlayer.(*layers.TCP)
 		h := Hostinfo{}
