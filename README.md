@@ -35,7 +35,7 @@ func main() {
 }
 ```
 
-You can test out your portscanner using hping3 like so:
+You can test out your portknocker using hping3 like so:
 
 ```sh
 echo Knock Knock
