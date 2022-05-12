@@ -34,3 +34,14 @@ func main() {
 	}
 }
 ```
+
+You can test out your portscanner using hping3 like so:
+
+```sh
+echo Knock Knock
+
+hping3 -S 45.33.32.156 -p 1337 -c 1 
+hping3 -S 45.33.32.156 -p 1338 -c 1 
+hping3 -S 45.33.32.156 -p 1339 -c 1 
+
+```
